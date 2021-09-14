@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ProductService } from './services/product.service';
 import { Router, Routes } from '@angular/router';
 import { RouterModule } from '@angular/router';
@@ -24,6 +24,7 @@ import { OKTA_CONFIG, OktaAuthModule, OktaCallbackComponent, OktaAuthGuard } fro
 import myAppConfig from './config/my-app-config';
 import { MembersPageComponent } from './components/members-page/members-page.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
+import { AuthInterceptorService } from './services/auth-interceptor.service';
 
 const oktaConfig = Object.assign
 ({
@@ -91,10 +92,18 @@ const routes: Routes = [
     ReactiveFormsModule,
     OktaAuthModule
   ],
-  // inject ProductService
-  // ALLOW us to INJECT the given service to other parts of application
-  // { provide: OKTA_CONFIG, useValue: oktaConfig } >>> dependency injection for Okta Auth Service
-  providers: [ProductService, { provide: OKTA_CONFIG, useValue: oktaConfig }],
+  
+  // ALLOW us to INJECT the given service to other parts of application  
+  providers: [
+    // inject ProductService
+    ProductService,
+    // { provide: OKTA_CONFIG, useValue: oktaConfig } >>> dependency injection for Okta Auth Service 
+    { provide: OKTA_CONFIG, useValue: oktaConfig },
+    // provide: HTTP_INTERCEPTORS >>> Token for HTTP Interceptor
+    // useClass: AuthInterceptorService >>> Register AuthInterceptorService as an Interceptor
+    // multi: true >>> can have zero to many interceptors, inform Angular that HTTP_INTERCEPTORS is a token for injection an array of values
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
