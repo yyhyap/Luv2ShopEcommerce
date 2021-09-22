@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Product } from '../common/product';
 import { map } from 'rxjs/operators';
 import { ProductCategory } from '../common/product-category';
+import { environment } from 'src/environments/environment';
 
 // can be injected to other components / classes
 @Injectable({
@@ -13,9 +14,9 @@ import { ProductCategory } from '../common/product-category';
 export class ProductService {
 
   // By default, Spring Data REST only returns the first page of 20 items. Can modify by adding ?size=100 (100 items per page).
-  private baseUrl: string = 'http://localhost:8080/api/products';
+  private baseUrl: string = environment.luv2shopApiUrl + '/products';
 
-  private productCategoryUrl: string = 'http://localhost:8080/api/product-category';
+  private productCategoryUrl: string = environment.luv2shopApiUrl + '/product-category';
 
   // inject HttpClient
   constructor(private httpClient: HttpClient) { }
@@ -52,6 +53,8 @@ export class ProductService {
   {
     // const baseUrlSize100 = `${this.baseUrl}?size=100`;
     const baseUrl = `${this.baseUrl}?page=${thePage}&size=${thePageSize}`;
+
+    console.log(`Getting products from --- ${baseUrl}`);
 
     return this.httpClient.get<GetResponseProducts>(baseUrl);
   }
@@ -105,7 +108,7 @@ export class ProductService {
   {
     // need to build URL based on keyword, page and size
     const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${theKeyword}&page=${thePage}&size=${thePageSize}`;
-
+    
     return this.httpClient.get<GetResponseProducts>(searchUrl);
   }
 

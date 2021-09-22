@@ -20,7 +20,7 @@ export default {
     {
         clientId: '0oabnoro3DhhYXIMF5d6',
         issuer: 'https://dev-94708540.okta.com/oauth2/default',
-        redirectUri: 'http://localhost:4200/login/callback',
+        redirectUri: 'https://localhost:4200/login/callback',
         scopes: ['openid', 'email', 'profile']
     }
 
